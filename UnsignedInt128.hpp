@@ -2,6 +2,7 @@
 // -Designed specifically for the implementation of Sha512.
 
 #include<cstdint>
+#include<iostream>
 
 typedef std::int64_t   i64;
 typedef std::uint64_t ui64;
@@ -25,9 +26,12 @@ struct UnsignedInt128 {
 
 	// -Bitwise shift to the right.
 	// -Intended for the application of the integer division
-	//   operation when the denominator is a power of two.
+	//  operation when the denominator is a power of two.
 	UnsignedInt128& operator >>= (int n);
 
-	// -Comparation operator.
+	// -Comparason operator.
 	bool operator != (int n);
+
+	// -Insertion operator.
+	friend std::ostream& operator << (std::ostream& s, UnsignedInt128 n);
 };

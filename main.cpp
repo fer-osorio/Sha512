@@ -23,14 +23,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include <iostream>
 #include "UnsignedInt128.hpp"
 
 int main (int argc, char* argv[])
 {
-    char x = -1;
-    //unsigned int ux = x;
-    printf("x = %X\n", (unsigned char) x);
+    ui64 x[2] = {0xFFF, 0xFFF000};
+    UnsignedInt128 n(x[0], x[1]);
+
+    std::cout << n << '\n';
 
     return EXIT_SUCCESS;
 }

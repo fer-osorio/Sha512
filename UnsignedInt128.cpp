@@ -91,3 +91,17 @@ bool UnsignedInt128::operator != (int n) {
 
     return n != int(number[1]);
 }
+
+std::ostream& operator << (std::ostream& s, UnsignedInt128 n) {
+    int i, j;
+    char c;
+    for(i = 0; i < 2; i++)
+        for(j = 0; j < 16; j++) {
+            c = (char) (n.number[i] >> ((15 - j) << 2)) & (char)15;
+            if(c < 10) c += 48;
+            else c += 55;
+            s << c;
+        }
+    return s;
+}
+

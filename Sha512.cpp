@@ -1,6 +1,5 @@
 // -Definitions for the Sha512 Functions.
 
-#include <iostream>
 #include"Sha512.hpp"
 
 Sha512::Sha512(const char data[], const ui64 size[2]) {
