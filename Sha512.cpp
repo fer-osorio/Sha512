@@ -20,7 +20,7 @@ i64 Sha512::RotL(i64 x, int n) {
     return x << n | x >> (64 - n);
 }
 
-i64 Sha512::Ch(i64 x,i64 y, i64 z) {
+i64 Sha512::Ch(i64 x, i64 y, i64 z) {
     return x&y ^ ~x&z;
 }
 
@@ -62,7 +62,8 @@ void Sha512::int64_to_8bytes(const i64 n, char result[8]) {
 }
 
 void Sha512::calculateHash(const char data[], const ui64 size[2]) {
-    int k = 895 - int(size[1]) & 1023, i; // k = 895 - size % 1024
+    int k = 895 - (int(size[1]) & 1023), i; // k = 895 - size % 1024
+    bool _2BlocksAdded = false;
 
     // -Getting the size in blocks of 1024.
     UnsignedInt128 N(size[0], size[1]);
@@ -72,6 +73,7 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
     N++;      // -In any case well add one more 1024 block.
     if(k < 0) {
         N++;  // -One block isn't enough, adding another one.
+        _2BlocksAdded = true;
         k += 1024; // -Making k positive.
     }
 
@@ -113,7 +115,7 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
 }
 
 void Sha512::print(void) {
-    for(int i = 0; i < 64; i++) printf("%X", (unsigned char) Hash[64]);
+    for(int i = 0; i < 64; i++) printf("%X", (unsigned char) Hash[i]);
 }
 
 void Sha512::println(void) {
@@ -121,3 +123,19 @@ void Sha512::println(void) {
     std::cout << '\n';
 }
 
+std::ostream& operator << (std::ostream& s, Sha512 sha) {
+    int i;
+    char a, b; // -Each byte can be represented by two hexadecimal characters
+    for(i = 0; i < 64; i++) {
+        // If i is not zero and i is divisible by 8 (i & 7 == i % 8) then...
+        if(i != 0 && (i & 7) == 0) s << ',';
+        a = sha.Hash[i] >> 4;  // -Taking the first four bits.
+        b = sha.Hash[i] & 15; // -Taking the last four bits.
+        // -Implementing ascii code.
+        a < 10 ? a += 48 : a += 55;
+        b < 10 ? b += 48 : b += 55;
+        // -Sending to output stream.
+        s << a; s << b;
+    }
+    return s;
+}

@@ -36,6 +36,8 @@ class Sha512 {
 	// -Input: a0•a1•...•a7 where • is concatenation. Output {a0, a1,..., a7}.
 	void int64_to_8bytes(const i64 n, char result[8]);
 
+	friend std::ostream& operator << (std::ostream& s, Sha512 sha);
+
     // -Constants.-------------------------------------------------------------
     ui64 K[80] = {
 		0x428A2F98D728AE22L, 0x7137449123EF65CDL, 0xB5C0FBCFEC4D3B2FL, 0xE9B5DBA58189DBBCL, 0x3956C25BF348B538L,

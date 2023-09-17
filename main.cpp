@@ -23,14 +23,14 @@
  * SPDX-License-Identifier: MIT
  */
 
-#include "UnsignedInt128.hpp"
+#include "Sha512.hpp"
 
 int main (int argc, char* argv[])
 {
-    ui64 x[2] = {0xFFF, 0xFFF000};
-    UnsignedInt128 n(x[0], x[1]);
-
-    std::cout << n << '\n';
-
-    return EXIT_SUCCESS;
+    char seed[] = "abc";
+    ui64 sz[2] = {0, 24};
+    Sha512 s(seed, sz);
+    s.println();
+    //std::cout << s << '\n';
+    return 0;
 }
