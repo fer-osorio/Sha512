@@ -66,28 +66,28 @@ void Sha512::processBlock(const char M[128], i64 W[80], i64 H[8]) {
     const char *dptr = M;
     int i;
     // -Creating message schedule.
-        for(i = 0; i < 80; i++) {
-            if(i < 16) {
-                W[i] = _8bytes_to_int64(dptr);
-                dptr += 8;
-            } else
-                W[i] = sigma1(W[i-2]) + W[i-7] + sigma0(W[i-15]) + W[i-16];
-        }
-        // -Initializing working variables.
-        a = H[0]; b = H[1]; c = H[2]; d = H[3];
-        e = H[4]; f = H[5]; g = H[6]; h = H[7];
+    for(i = 0; i < 80; i++) {
+        if(i < 16) {
+            W[i] = _8bytes_to_int64(dptr);
+            dptr += 8;
+        } else
+            W[i] = sigma1(W[i-2]) + W[i-7] + sigma0(W[i-15]) + W[i-16];
+    }
+    // -Initializing working variables.
+    a = H[0]; b = H[1]; c = H[2]; d = H[3];
+    e = H[4]; f = H[5]; g = H[6]; h = H[7];
 
-        for(i = 0; i < 80; i++) {
-            T1 = h + SIGMA1(e) + Ch(e, f, g) + i64(K[i]) + W[i];
-            T2 = SIGMA0(a) + Maj(a, b, c);
-            h = g; g = f; f = e; e = d + T1;
-            d = c; c = b; b = a; a = T1 + T2;
-        }
-        // -Computing intermediate value.
-        H[0] += a; H[4] += e;
-        H[1] += b; H[5] += f;
-        H[2] += c; H[6] += g;
-        H[3] += d; H[7] += h;
+    for(i = 0; i < 80; i++) {
+        T1 = h + SIGMA1(e) + Ch(e, f, g) + i64(K[i]) + W[i];
+        T2 = SIGMA0(a) + Maj(a, b, c);
+        h = g; g = f; f = e; e = d + T1;
+        d = c; c = b; b = a; a = T1 + T2;
+    }
+    // -Computing intermediate value.
+    H[0] += a; H[4] += e;
+    H[1] += b; H[5] += f;
+    H[2] += c; H[6] += g;
+    H[3] += d; H[7] += h;
 }
 
 void Sha512::calculateHash(const char data[], const ui64 size[2]) {
@@ -118,18 +118,51 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
         dptr += 128;
         N--;
     }
-    r >>= 3; // r /= 8
+    r >>= 3; // r /= 8 // -Amount of bytes hasn't been processed.
+    // !!!!!!!!!!!!!!!!! I'm supposing that r < 128!!!!!!!!!!!!!!
     for(i = 0; i < r; i++) auxBlock[i] = dptr[i];
-    auxBlock[r] = 0x80; k -= 7; k >>= 8;
+
+    // -Putting the '1' at the end of the data. Since the added byte is
+    //  1000,0000, we have to decrease k by 7.
+    //  !!!!!!!!! Need to check if k-7 is divisible by 8 !!!!!!!!!!!!!!
+    auxBlock[r] = 0x80; k -= 7;
+    k >>= 3; // k /= 8 // -Amount of zero bytes we have to add.
     for(i = r + 1; i < 128 && k > 0; i++, k--) auxBlock[i] = 0;
-    if(i == 128) processBlock(auxBlock, W, H);
+
+    if(i == 128) {
+        processBlock(auxBlock, W, H);
+        // -Adding the rest of the zero's
+        // !!!!! Need to check if k > 0 !!!!!!
+        for(i = 0; i < k; i++) auxBlock[i] = 0;
+    }
+    // -Putting the size at the end of the block. Changing the purpose
+    //  of k, now is a counting variable.
+    for(k = 0; k < 16; i++, k++) {
+        if(k < 8) auxBlock[i] = size[0] >> (56 - (k << 3));
+        else auxBlock[i] = size[1] >> (56 - ((k-8) << 3));
+    }
+    std::cout << "\n";
+    for(k = 0; k < 128; k++) {
+        if(k != 0 && (k & 7) == 0) std::cout << ',';
+        if(auxBlock[k] < 16 && auxBlock[k] >= 0) std::cout << '0';
+        printf("%X", (unsigned char)auxBlock[k]);
+    }
+    std::cout << "\n\n";
+    processBlock(auxBlock, W, H);
+    if(i != 128) std::cout << "\n\n¡Something went wrong!\n\n";
 
     // -Converting the integers of 64 bits in 8 bytes. i * 8.
     for(i = 0; i < 8; i++) int64_to_8bytes(H[i], &Hash[i << 3]);
+
 }
 
 void Sha512::print(void) {
-    for(int i = 0; i < 64; i++) printf("%X", (unsigned char) Hash[i]);
+    int i;
+    for(i = 0; i < 64; i++) {
+        if(i != 0 && (i & 7) == 0) printf(",");
+        if(Hash[i] < 16 && Hash[i] >= 0) std::cout << '0';
+        printf("%X", (unsigned char) Hash[i]);
+    }
 }
 
 void Sha512::println(void) {
