@@ -36,6 +36,9 @@ class Sha512 {
 	// -Input: a0•a1•...•a7 where • is concatenation. Output {a0, a1,..., a7}.
 	void int64_to_8bytes(const i64 n, char result[8]);
 
+	// -Processes a 1024- bits block.
+	void processBlock(const char M[128], i64 W[80], i64 H[8]);
+
 	friend std::ostream& operator << (std::ostream& s, Sha512 sha);
 
     // -Constants.-------------------------------------------------------------

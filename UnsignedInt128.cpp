@@ -92,6 +92,18 @@ bool UnsignedInt128::operator != (int n) {
     return n != int(number[1]);
 }
 
+bool UnsignedInt128::operator > (int n) {
+    if(n < 0) return true;  //  -Because our number is unsigned.
+
+    // number[0] > 0 then number[0]·2^64 + number[1] > 2^31-1.
+    if(number[0] > 0) return true;
+
+    // Remember: 0xFFFFFFF == 2^31 - 1 maximum value for an int.
+    if(number[1] > ui64(0xFFFFFFF)) return true;
+
+    return n > int(number[1]);
+}
+
 std::ostream& operator << (std::ostream& s, UnsignedInt128 n) {
     int i, j;
     char c;

@@ -29,8 +29,11 @@ struct UnsignedInt128 {
 	//  operation when the denominator is a power of two.
 	UnsignedInt128& operator >>= (int n);
 
-	// -Comparason operator.
+	// -Comparison operator.
 	bool operator != (int n);
+
+	// -Bigger than operator.
+	bool operator > (int n);
 
 	// -Insertion operator.
 	friend std::ostream& operator << (std::ostream& s, UnsignedInt128 n);
