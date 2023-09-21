@@ -6,8 +6,8 @@ class Sha512 {
 	public:
 	Sha512(const char data[], const ui64 size[2]);
 	void calculateHash(const char data[], const ui64 size[2]);
-	void print(void);
-	void println(void);
+	void print(void) const;
+	void println(void) const;
 
 	private:
 	char Hash[64]; // Stores the hash value.
@@ -38,6 +38,8 @@ class Sha512 {
 
 	// -Processes a 1024- bits block.
 	void processBlock(const char M[128], i64 W[80], i64 H[8]);
+
+	void printHexUnsg(i64 n);
 
 	friend std::ostream& operator << (std::ostream& s, Sha512 sha);
 

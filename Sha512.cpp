@@ -9,14 +9,14 @@ Sha512::Sha512(const char data[], const ui64 size[2]) {
 // -Rotation to the right.
 i64 Sha512::RotR(i64 x, int n) {
     if(n <  0) n = -n;
-    if(n > 64) n %= 64;
+    if(n > 64) n &= 63; // n %= 64
     return x >> n | x << (64 - n);
 }
 
 // -Rotation to the left.
 i64 Sha512::RotL(i64 x, int n) {
     if(n <  0) n = -n;
-    if(n > 64) n %= 64;
+    if(n > 64) n &= 63; // n %= 64
     return x << n | x >> (64 - n);
 }
 
@@ -50,7 +50,7 @@ i64 Sha512::_8bytes_to_int64(const char bytes[8]) {
         // Making room for the bits of the next byte
         r <<= 8;
         // Allocating bits at the end.
-        r |= i64(bytes[i]);
+        r |= i64((unsigned char)bytes[i]);
     }
     return r;
 }
@@ -69,6 +69,9 @@ void Sha512::processBlock(const char M[128], i64 W[80], i64 H[8]) {
     for(i = 0; i < 80; i++) {
         if(i < 16) {
             W[i] = _8bytes_to_int64(dptr);
+            // -Debugging purposes.
+            //  printHexUnsg(W[i]);
+            //  std::cout << '\n';
             dptr += 8;
         } else
             W[i] = sigma1(W[i-2]) + W[i-7] + sigma0(W[i-15]) + W[i-16];
@@ -111,7 +114,12 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
     i64 W[80], H[8];
 
     // -Initializing hash.
-    for(i = 0; i < 8; i++) H[i] = (i64)H0[i];
+    for(i = 0; i < 8; i++) {
+        H[i] = (i64)H0[i];
+        // -Debugging purposes.
+        //  printHexUnsg(H[i]);
+        //  std::cout << '\n';
+    }
 
     while(N > blocksAdded) {
         processBlock(dptr, W, H);
@@ -156,7 +164,7 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
 
 }
 
-void Sha512::print(void) {
+void Sha512::print(void) const {
     int i;
     for(i = 0; i < 64; i++) {
         if(i != 0 && (i & 7) == 0) printf(",");
@@ -165,9 +173,18 @@ void Sha512::print(void) {
     }
 }
 
-void Sha512::println(void) {
+void Sha512::println(void) const {
     print();
     std::cout << '\n';
+}
+
+void Sha512::printHexUnsg(i64 n) {
+    unsigned int b;
+    for(int i = 0; i < 8; i++) {
+        b = (n >> (56 - (i << 3))) & 255;
+        if(b < 16) std::cout << '0';
+        printf("%X", b);
+    }
 }
 
 std::ostream& operator << (std::ostream& s, Sha512 sha) {
