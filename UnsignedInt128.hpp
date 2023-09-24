@@ -20,9 +20,9 @@ struct UnsignedInt128 {
 	// -Necessary operators.
 
 	// -Addition of one unit.
-	UnsignedInt128& operator ++ (int);
+	UnsignedInt128 operator ++ (int);
 	// -Subtraction of one unit.
-	UnsignedInt128& operator -- (int);
+	UnsignedInt128 operator -- (int);
 
 	// -Bitwise shift to the right.
 	// -Intended for the application of the integer division

@@ -5,6 +5,7 @@
 class Sha512 {
 	public:
 	Sha512(const char data[], const ui64 size[2]);
+	Sha512(const char data[], const ui64 size);
 	void calculateHash(const char data[], const ui64 size[2]);
 	void print(void) const;
 	void println(void) const;
@@ -15,36 +16,34 @@ class Sha512 {
     // -Functions.-------------------------------------------------------------
 
     // -Rotation to the right.
-    i64 RotR(i64 x, int n);
+    ui64 RotR(ui64 x, int n);
     // -Rotation to the left.
-    i64 RotL(i64 x, int n);
+    ui64 RotL(ui64 x, int n);
 
 	// -Functions implemented directly in the SHA512 algorithm.
-    i64 Ch(i64 x,i64 y, i64 z);
-    i64 Maj(i64 x, i64 y, i64 z);
+    ui64 Ch(ui64 x, ui64 y, ui64 z);
+    ui64 Maj(ui64 x, ui64 y, ui64 z);
 
-    i64 SIGMA0(i64 x);
-    i64 SIGMA1(i64 x);
-    i64 sigma0(i64 x);
-    i64 sigma1(i64 x);
+    ui64 SIGMA0(ui64 x);
+    ui64 SIGMA1(ui64 x);
+    ui64 sigma0(ui64 x);
+    ui64 sigma1(ui64 x);
 
 	// -Takes an array of 8 bytes and builds an integer of 64 bits (8 bytes).
 	// -Input: {a0, a1,..., a7}. Output a0•a1•...•a7 where • is concatenation.
-	i64 _8bytes_to_int64(const char bytes[8]);
+	ui64 _8bytes_to_int64(const char bytes[8]);
 
 	// -Takes an integer of 64 bits (8 bytes) and builds an array of 8 bytes.
 	// -Input: a0•a1•...•a7 where • is concatenation. Output {a0, a1,..., a7}.
-	void int64_to_8bytes(const i64 n, char result[8]);
+	void int64_to_8bytes(const ui64 n, char result[8]);
 
 	// -Processes a 1024- bits block.
-	void processBlock(const char M[128], i64 W[80], i64 H[8]);
-
-	void printHexUnsg(i64 n);
+	void processBlock(const char M[128], ui64 W[80], ui64 H[8]);
 
 	friend std::ostream& operator << (std::ostream& s, Sha512 sha);
 
     // -Constants.-------------------------------------------------------------
-    ui64 K[80] = {
+    const ui64 K[80] = {
 		0x428A2F98D728AE22L, 0x7137449123EF65CDL, 0xB5C0FBCFEC4D3B2FL, 0xE9B5DBA58189DBBCL, 0x3956C25BF348B538L,
 		0x59F111F1B605D019L, 0x923F82A4AF194F9BL, 0xAB1C5ED5DA6D8118L, 0xD807AA98A3030242L, 0x12835B0145706FBEL,
 		0x243185BE4EE4B28CL, 0x550C7DC3D5FFB4E2L, 0x72BE5D74F27B896FL, 0x80DEB1FE3B1696B1L, 0x9BDC06A725C71235L,
@@ -63,7 +62,7 @@ class Sha512 {
 		0x431D67C49C100D4CL, 0x4CC5D4BECB3E42B6L, 0x597F299CFC657E2AL, 0x5FCB6FAB3AD6FAECL, 0x6C44198C4A475817L
 	};
 
-	ui64 H0[8] =  {
+	const ui64 H0[8] = {
         0x6A09E667F3BCC908L,
 		0xBB67AE8584CAA73BL,
 		0x3C6EF372FE94F82BL,

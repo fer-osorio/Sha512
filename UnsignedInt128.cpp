@@ -1,9 +1,10 @@
 #include"UnsignedInt128.hpp"
 
-UnsignedInt128::UnsignedInt128(std::uint64_t a, std::uint64_t b)
+UnsignedInt128::UnsignedInt128(ui64 a, ui64 b)
 : number{a,b} {/*Nothing more to do.*/}
 
-UnsignedInt128& UnsignedInt128::operator ++ (int) {
+UnsignedInt128 UnsignedInt128::operator ++ (int) {
+    UnsignedInt128 original(number[0], number[0]);
     if(number[0] == 0) { // Special case < 2^64
         if(number[1] == ui64(-1)) {
             // -Digit 1 has the maximum value for an
@@ -16,7 +17,7 @@ UnsignedInt128& UnsignedInt128::operator ++ (int) {
             //  we can handle this case as follows
             number[1]++;
 
-        return *this;
+        return original;
     }
 
      // -Case >= 2^64
@@ -34,34 +35,35 @@ UnsignedInt128& UnsignedInt128::operator ++ (int) {
     }
     else number[1]++;
 
-    return *this;
+    return original;
 }
 
-UnsignedInt128& UnsignedInt128::operator -- (int) {
+UnsignedInt128 UnsignedInt128::operator -- (int) {
+    UnsignedInt128 original(number[0], number[0]);
     if(number[0] == 0) { // Special case < 2^64
         if(number[1] == 0)
             // -If our number is zero, we set the our
             //  value as 2^128 - 1 because 2^128 - 1
             //  is congruent with -1 modulus 128.
             //  Maybe we can change this.
-            number[0] = number[1] = std::uint64_t(-1);
+            number[0] = number[1] = ui64(-1);
         else
             // -Number not zero, but is smaller than
             //  2^64, so we can handle this case as
             //  follows
             number[1]--;
 
-        return *this;
+        return original;
     }
      // -Case >= 2^64
     if(number[1] == 0) {
         // -Case when we need to borrow.
         number[0]--;
-        number[1] = std::uint64_t(-1);
+        number[1] = ui64(-1);
     }
     else number[1]--;
 
-    return *this;
+    return original;
 }
 
 UnsignedInt128& UnsignedInt128::operator >>= (int n) {

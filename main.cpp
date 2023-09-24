@@ -24,13 +24,37 @@
  */
 
 #include "Sha512.hpp"
+#include "Data.hpp"
 
 int main (int argc, char* argv[])
 {
-    char seed[] = "abc";
-    ui64 sz[2] = {0, 24};
-    Sha512 s(seed, sz);
-    s.println();
-    //std::cout << s << '\n';
+    if(argc > 1) {
+        std::cout << "File input not supported.\n";
+        for(int i = 1; i < argc; i ++)
+            std::cout << argv[i] << "won't be read";
+    }
+
+    char buffer[512];
+    unsigned i = 0, sz = 0;
+    Data d;
+
+    std::cout << "\nWrite the string you want to hash. To process the "
+                 "string sent the value 'EOF', which you can do by:\n\n"
+                 "- Pressing twice the keys CTRL-Z for Windows.\n"
+                 "- Pressing twice the keys CTRL-D for Unix and Linux.\n\n";
+
+    while((buffer[i++] = getchar()) != EOF)
+        if(i == 512) { // Buffer exhausted.
+            d.append(buffer, 512);
+            sz += 512;
+            i = 0;
+        }
+    buffer[--i] = 0;
+    d.append(buffer, i);
+                           // d.getSize() * 8
+    Sha512 sh(d.getContent(), d.getSize() << 3);
+    std::cout << "\nHash :: ";
+    sh.println();
+
     return 0;
 }
