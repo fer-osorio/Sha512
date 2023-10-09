@@ -31,10 +31,11 @@ int main (int argc, char* argv[])
     if(argc > 1) {
         std::cout << "File input not supported.\n";
         for(int i = 1; i < argc; i ++)
-            std::cout << argv[i] << "won't be read";
+            std::cout << argv[i] << "won't be read\n";
+        return 1;
     }
 
-    char buffer[512];
+    char buffer[BLOCK_SIZE];
     unsigned i = 0, sz = 0;
     Data d;
 
@@ -44,15 +45,14 @@ int main (int argc, char* argv[])
                  "- Pressing twice the keys CTRL-D for Unix and Linux.\n\n";
 
     while((buffer[i++] = getchar()) != EOF)
-        if(i == 512) { // Buffer exhausted.
-            d.append(buffer, 512);
-            sz += 512;
+        if(i == BLOCK_SIZE) { // Buffer exhausted.
+            d.append(buffer, BLOCK_SIZE);
+            sz += BLOCK_SIZE;
             i = 0;
         }
     buffer[--i] = 0;
     d.append(buffer, i);
-                           // d.getSize() * 8
-    Sha512 sh(d.getContent(), d.getSize() << 3);
+    Sha512 sh(d.getContent()->bytes, d.getSize());
     std::cout << "\nHash :: ";
     sh.println();
 

@@ -5,10 +5,16 @@
 class Sha512 {
 	public:
 	Sha512(const char data[], const ui64 size[2]);
-	Sha512(const char data[], const ui64 size);
+	Sha512(const char data[], const ui64 size); // Size in bytes
+	Sha512(const char* data[], ui64 numRows, ui64 rowLength);
 	void calculateHash(const char data[], const ui64 size[2]);
+	void calculateHash(const char data[], const ui64 size);
 	void print(void) const;
 	void println(void) const;
+	// -Sets the initial hash value with the value of the passed
+	//  array. If no argument passed, the initial hash value
+	//  is reset to the value specified by the NIST standard.
+	void setInitialHashValue(ui64 _H0[8] = NULL);
 
 	private:
 	char Hash[64]; // Stores the hash value.
@@ -62,7 +68,7 @@ class Sha512 {
 		0x431D67C49C100D4CL, 0x4CC5D4BECB3E42B6L, 0x597F299CFC657E2AL, 0x5FCB6FAB3AD6FAECL, 0x6C44198C4A475817L
 	};
 
-	const ui64 H0[8] = {
+	const ui64 H00[8] = {
         0x6A09E667F3BCC908L,
 		0xBB67AE8584CAA73BL,
 		0x3C6EF372FE94F82BL,
@@ -72,4 +78,5 @@ class Sha512 {
 		0x1F83D9ABFB41BD6BL,
 		0x5BE0CD19137E2179L
     };
+    ui64* H0 = (ui64*)H00;
 };

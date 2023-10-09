@@ -4,12 +4,31 @@
 #include"DataPrintFunctions.hpp"
 
 Sha512::Sha512(const char data[], const ui64 size[2]) {
-    calculateHash(data, size);
+    ui64 sz[2];
+    sz[0] = size[0] << 3;     // -From size in bytes to
+    sz[0] |= (size[1] >> 61); //  size in bits, witch is
+    sz[1] = size[1] << 3;     //  just to multiply by 8
+    calculateHash(data, sz);
 }
 
 Sha512::Sha512(const char data[], const ui64 size) {
-    ui64 _size[2] = {0, size};
-    calculateHash(data, _size);
+    calculateHash(data, size << 3);
+}
+
+Sha512::Sha512(const char* data[], ui64 numRows, ui64 rowLength) {
+    UnsignedInt128 sz = ui64product(numRows, rowLength); // size
+    ui64 i, H[8];
+    calculateHash(data[0], rowLength); // -Hash of the first row
+    auto updateH = [&H, this](void) {
+        for(int j = 0; j < 8; j++) {
+            H[j] = _8bytes_to_int64(&Hash[j<<3]);
+        }
+    };
+    for(i = 1; i < numRows; i++) {
+        updateH();
+        setInitialHashValue(H);
+        calculateHash(data[i], rowLength);
+    }
 }
 
 // -Rotation to the right.
@@ -134,6 +153,10 @@ void Sha512::processBlock(const char M[128], ui64 W[80], ui64 H[8]) {
     H[3] += WV[3]; H[7] += WV[7];
 }
 
+void Sha512::setInitialHashValue(ui64 _H0[8]) {
+    if(_H0 != NULL) H0 = _H0;
+}
+
 void Sha512::calculateHash(const char data[], const ui64 size[2]) {
     int r = size[1] & 1023, k = 895 - r, i; // k = 895 - size % 1024
     int blocksAdded = 1, counter = 0;
@@ -221,6 +244,11 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
     // -Converting the integers of 64 bits in 8 bytes. i * 8.
     for(i = 0; i < 8; i++) int64_to_8bytes(H[i], &Hash[i << 3]);
 
+}
+
+void Sha512::calculateHash(const char data[], const ui64 size) {
+    ui64 sz[2] = {0, size};
+    calculateHash(data, sz);
 }
 
 void Sha512::print(void) const {
