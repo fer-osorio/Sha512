@@ -4,8 +4,12 @@
 #include<cstdint>
 #include<iostream>
 
+#ifndef _INCLUDED_UNSIGNEDINT128_
+#define _INCLUDED_UNSIGNEDINT128_
+
 typedef std::int64_t   i64;
 typedef std::uint64_t ui64;
+typedef std::uint32_t ui32;
 
 struct UnsignedInt128 {
 	private:
@@ -13,28 +17,34 @@ struct UnsignedInt128 {
 	ui64 number[2];
 
 	public:
+	// -Default constructor. Builds zero.
+	UnsignedInt128();
 	// -Constructor. The resulting object will represent
 	//  the integer a·2^64 + b.
 	UnsignedInt128(ui64 a, ui64 b);
+	UnsignedInt128(const UnsignedInt128&);
 
-	// -Necessary operators.
+	UnsignedInt128& operator = (const UnsignedInt128&);
 
-	// -Addition of one unit.
 	UnsignedInt128 operator ++ (int);
-	// -Subtraction of one unit.
 	UnsignedInt128 operator -- (int);
 
 	// -Bitwise shift to the right.
 	// -Intended for the application of the integer division
 	//  operation when the denominator is a power of two.
 	UnsignedInt128& operator >>= (int n);
-
-	// -Comparison operator.
+	// -Bitwise shift to the left.
+	// -Intended for the multiplication by power of two.
+	UnsignedInt128& operator <<= (int n);
 	bool operator != (int n);
-
-	// -Bigger than operator.
 	bool operator > (int n);
-
-	// -Insertion operator.
 	friend std::ostream& operator << (std::ostream& s, UnsignedInt128 n);
+
+	private:
+	friend UnsignedInt128& copyAssigment(UnsignedInt128&,const UnsignedInt128&);
+	friend void copyConstructor(UnsignedInt128&,const UnsignedInt128&);
 };
+
+UnsignedInt128 ui64product(ui64, ui64);
+
+#endif
