@@ -11,6 +11,9 @@ HEADERS = Sha512.hpp UnsignedInt128.hpp DataPrintFunctions.hpp Data.hpp
 Sha512: Makefile $(SOURCE) $(HEADERS)
 	$(CXX) -o $@ $(WARNINGS) $(DEBUG) $(OPTIMIZE) $(STANDARD) $(SOURCE)
 
+UnsignedInt128: Makefile UnsignedInt128.cpp UnsignedInt128.hpp
+	$(CXX) -o $@ $(WARNINGS) $(DEBUG) $(OPTIMIZE) $(STANDARD) UnsignedInt128.cpp
+
 clean:
 	rm -f Sha512
 
