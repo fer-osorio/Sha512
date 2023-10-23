@@ -39,10 +39,6 @@ struct UnsignedInt128 {
 	bool operator != (int n);
 	bool operator > (int n);
 	friend std::ostream& operator << (std::ostream& s, UnsignedInt128 n);
-
-	private:
-	friend UnsignedInt128& copyAssigment(UnsignedInt128&,const UnsignedInt128&);
-	friend void copyConstructor(UnsignedInt128&,const UnsignedInt128&);
 };
 
 UnsignedInt128 ui64product(ui64, ui64);

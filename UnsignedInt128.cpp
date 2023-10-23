@@ -6,11 +6,15 @@ UnsignedInt128::UnsignedInt128(ui64 a, ui64 b)
 : number{a,b} {/*Nothing more to do.*/}
 
 UnsignedInt128::UnsignedInt128(const UnsignedInt128& a) {
-    copyConstructor(*this, a);
+    this->number[0] = a.number[0];
+    this->number[1] = a.number[1];
 }
 
-UnsignedInt128& UnsignedInt128::operator = (const UnsignedInt128& a) {
-    copyAssigment(*this, a);
+UnsignedInt128& UnsignedInt128::operator = (const UnsignedInt128& b) {
+    if(&b != this) {
+        this->number[0] = b.number[0];
+        this->number[1] = b.number[1];
+    }
     return *this;
 }
 
@@ -130,7 +134,7 @@ bool UnsignedInt128::operator > (int n) {
     // Remember: 0xFFFFFFF == 2^31 - 1 maximum value for an int.
     if(number[1] > ui64(0xFFFFFFF)) return true;
 
-    return n > int(number[1]);
+    return int(number[1]) > n;
 }
 
 std::ostream& operator << (std::ostream& s, UnsignedInt128 n) {
@@ -149,17 +153,6 @@ std::ostream& operator << (std::ostream& s, UnsignedInt128 n) {
         }
     if(!nonZero_found) s << '0';
     return s;
-}
-
-UnsignedInt128& copyAssigment(UnsignedInt128& a,const UnsignedInt128& b) {
-    a.number[0] = b.number[0];
-    a.number[1] = b.number[1];
-    return a;
-}
-
-void copyConstructor(UnsignedInt128& a,const UnsignedInt128& b){
-    a.number[0] = b.number[0];
-    a.number[1] = b.number[1];
 }
 
 // Multiplication of integers of 64 bits.------------------------------------
