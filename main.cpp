@@ -52,9 +52,8 @@ int main (int argc, char* argv[])
         }
     buffer[--i] = 0;
     d.append(buffer, i);
-    Sha512 sh(d.getContent()->bytes, d.getSize());
-    std::cout << "\nHash :: ";
-    sh.println();
+    Sha512 sha(d.getContent()->bytes, d.getSize());
+    std::cout << "\nHash :: "; sha.println();
 
     return 0;
 }

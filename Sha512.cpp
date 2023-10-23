@@ -16,7 +16,7 @@ Sha512::Sha512(const char data[], const ui64 size) {
 }
 
 Sha512::Sha512(const char* data[], ui64 numRows, ui64 rowLength) {
-    UnsignedInt128 sz = ui64product(numRows, rowLength); // size
+    UnsignedInt128 sz = ui64product(numRows, rowLength); //sz <<= 3; // sz*8
     ui64 i, H[8];
     calculateHash(data[0], rowLength); // -Hash of the first row
     auto updateH = [&H, this](void) {
@@ -26,7 +26,6 @@ Sha512::Sha512(const char* data[], ui64 numRows, ui64 rowLength) {
     };
     for(i = 1; i < numRows; i++) {
         updateH();
-        setInitialHashValue(H);
         calculateHash(data[i], rowLength);
     }
 }
@@ -153,12 +152,14 @@ void Sha512::processBlock(const char M[128], ui64 W[80], ui64 H[8]) {
     H[3] += WV[3]; H[7] += WV[7];
 }
 
-void Sha512::setInitialHashValue(ui64 _H0[8]) {
-    if(_H0 != NULL) H0 = _H0;
-}
 
 void Sha512::calculateHash(const char data[], const ui64 size[2]) {
-    int r = size[1] & 1023, k = 895 - r, i; // k = 895 - size % 1024
+    int r = size[1] & 1023; // r = size % 1024
+    // -The NIST standard specify the relation (l+1+k)%1024 == 896, but
+    //  since we'll need a hole byte to put the '1' at the end of the data,
+    //  the relation we'll use is (l+8+k)%1024 == 896, that is
+    //  k = 896 - r - 8 == 888 - r
+    int k = 888 - r, i;
     int blocksAdded = 1, counter = 0;
     bool debug = true; // -Shows the process.
 
@@ -192,14 +193,14 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
         dptr += 128;
         N--;
     }
+    // -Since r = size % 1024, then 0 <= r < 1024 therefore  0 <= r/8 < 128
     r >>= 3; // r /= 8 // -Amount of bytes hasn't been processed.
-    // !!!!!!!!!!!!!!!!! I'm supposing that r < 128!!!!!!!!!!!!!!
     for(i = 0; i < r; i++) auxBlock[i] = dptr[i];
 
-    // -Putting the '1' at the end of the data. Since the added byte is
-    //  1000,0000, we have to decrease k by 7.
-    //  !!!!!!!!! Need to check if k-7 is divisible by 8 !!!!!!!!!!!!!!
-    auxBlock[r] = (char)0x80; k -= 7;
+    // -Putting the '1' at the end of the data. As said before, we must add
+    //  a hole byte in this step, specifically the byte 1000,0000. This is the
+    //  reason why we use the relation (l+8+k)%1024 == 896.
+    auxBlock[r] = (char)0x80;
     k >>= 3; // k /= 8 // -Amount of zero bytes we have to add.
     for(i = r + 1; i < 128 && k > 0; i++, k--) auxBlock[i] = 0;
 
@@ -212,7 +213,6 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
         }
         processBlock(auxBlock, W, H);
         // -Adding the rest of the zero's
-        // !!!!! Need to check if k > 0 !!!!!!
         for(i = 0; i < k; i++) auxBlock[i] = 0;
     }
     // -Putting the size at the end of the block. Changing the purpose
@@ -221,17 +221,6 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
         if(k < 8) auxBlock[i] = size[0] >> (56 - (k << 3));
         else auxBlock[i] = size[1] >> (56 - ((k-8) << 3));
     }
-    /*if(debug) {
-        std::cout << "\n";
-        for(k = 0; k < 128; k++) {
-            if(k != 0 && (k & 7) == 0) {
-                k == 64 ? std::cout << '\n' : std::cout << ',';
-            }
-            if(auxBlock[k] < 16 && auxBlock[k] >= 0) std::cout << '0';
-            printf("%X", (unsigned char)auxBlock[k]);
-        }
-        std::cout << "\n\n";
-    }*/
     if(debug) {
         std::cout << "\n\n******************************************"
         "*********************************| Block "  << counter++ <<
