@@ -12,35 +12,25 @@ typedef std::uint64_t ui64;
 typedef std::uint32_t ui32;
 
 struct UnsignedInt128 {
-	private:
-	// -Interpretation:: number[0]·2^64 + number[1]
-	ui64 number[2];
-
-	public:
-	// -Default constructor. Builds zero.
-	UnsignedInt128();
-	// -Constructor. The resulting object will represent
-	//  the integer a·2^64 + b.
-	UnsignedInt128(ui64 a, ui64 b);
+	private:ui64 digits[2];														// -Interpretation:: digits[0]·2^64 + digits[1]. This is small endian; the reason of
+	public:																		//  this selection if pure convenience at the moment of printing
+	static const ui64 ui64MAX = 0xFFFFFFFFFFFFFFFF;								// -Maximum value for a 64 bits unsigned int
+	UnsignedInt128(): digits{0,0} {}											// -Default constructor. Builds zero.
+	UnsignedInt128(ui64 a): digits{a,0} {}										// -Cast from ui64 to UnsignedInt128.
+	UnsignedInt128(ui64 a, ui64 b): digits{a,b} {}								// -Constructor. The resulting object will represent the integer a·2^64 + b.
 	UnsignedInt128(const UnsignedInt128&);
 
 	UnsignedInt128& operator = (const UnsignedInt128&);
 
+	friend UnsignedInt128 ui64product(ui64, ui64);								// Product of two 64 bits integers
 	UnsignedInt128 operator ++ (int);
 	UnsignedInt128 operator -- (int);
 
-	// -Bitwise shift to the right.
-	// -Intended for the application of the integer division
-	//  operation when the denominator is a power of two.
-	UnsignedInt128& operator >>= (int n);
-	// -Bitwise shift to the left.
-	// -Intended for the multiplication by power of two.
-	UnsignedInt128& operator <<= (int n);
-	bool operator != (int n);
+	UnsignedInt128& operator >>= (int n);										// -Bitwise shift to the right
+	UnsignedInt128& operator <<= (int n);										// -Bitwise shift to the left
+	bool operator !=(int n);
 	bool operator > (int n);
 	friend std::ostream& operator << (std::ostream& s, UnsignedInt128 n);
 };
-
-UnsignedInt128 ui64product(ui64, ui64);
 
 #endif
