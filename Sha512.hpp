@@ -4,13 +4,19 @@
 
 class Sha512 {
 	public:
-	Sha512(const char data[], const ui64 size[2]);
-	Sha512(const char data[], const ui64 size); // Size in bytes
-	Sha512(const char* data[], ui64 numRows, ui64 rowLength);
+	Sha512(const char  data[], const ui64 size[2]);								// Size in bytes
+	Sha512(const char  data[], const ui64 size); 								// Size in bytes
+	Sha512(const char* data[], ui64 numRows, ui64 rowLength);					// Building Sha512 object from a 2D array. Supposing all rows has the same length
+	Sha512(const Sha512& sha);
+
 	void calculateHash(const char data[], const ui64 size[2]);
 	void calculateHash(const char data[], const ui64 size);
+
 	void print(void) const;
 	void println(void) const;
+
+	char operator [] (int) const;
+	Sha512& operator = (const Sha512& sha);
 
 	private:
 	char Hash[64]; // Stores the hash value.

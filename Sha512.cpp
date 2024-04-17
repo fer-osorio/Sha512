@@ -16,6 +16,7 @@ Sha512::Sha512(const char data[], const ui64 size) {
 }
 
 Sha512::Sha512(const char* data[], ui64 numRows, ui64 rowLength) {
+    // Still in progress...
     UnsignedInt128 sz = ui64product(numRows, rowLength); //sz <<= 3; // sz*8
     ui64 i, H[8];
     calculateHash(data[0], rowLength); // -Hash of the first row
@@ -28,6 +29,10 @@ Sha512::Sha512(const char* data[], ui64 numRows, ui64 rowLength) {
         updateH();
         calculateHash(data[i], rowLength);
     }
+}
+
+Sha512::Sha512(const Sha512& sha) {
+    for(int i = 0; i < 64; i++) this->Hash[i] = sha.Hash[i];
 }
 
 // -Rotation to the right.
@@ -252,6 +257,17 @@ void Sha512::print(void) const {
 void Sha512::println(void) const {
     print();
     std::cout << '\n';
+}
+
+char Sha512::operator [] (int i) const {
+    if(i < 0)   i = -i; // -Negative index
+    if(i >= 64) i &= 63;// -i %= 64
+    return Hash[i];
+}
+
+Sha512& Sha512::operator=(const Sha512 &sha) {
+    if(this != &sha) for(int i = 0; i < 64; i++) this->Hash[i] = sha.Hash[i];
+    return *this;
 }
 
 std::ostream& operator << (std::ostream& s, Sha512 sha) {
