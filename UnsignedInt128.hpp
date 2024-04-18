@@ -22,7 +22,6 @@ struct UnsignedInt128 {
 
 	UnsignedInt128& operator = (const UnsignedInt128&);
 
-	friend UnsignedInt128 ui64product(ui64, ui64);								// Product of two 64 bits integers
 	UnsignedInt128 operator ++ (int);
 	UnsignedInt128 operator -- (int);
 
@@ -32,5 +31,7 @@ struct UnsignedInt128 {
 	bool operator > (int n);
 	friend std::ostream& operator << (std::ostream& s, UnsignedInt128 n);
 };
+
+UnsignedInt128 ui64product(ui64, ui64);											// Product of two 64 bits integers
 
 #endif
