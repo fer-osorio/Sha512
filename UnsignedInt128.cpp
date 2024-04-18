@@ -125,10 +125,10 @@ UnsignedInt128 ui64product(ui64 a, ui64 b) {
 
 /*(2^{64}-1)^2 = 2^{128} - 2·2^{64} + 1*/
 
-int main(void) {
+/*int main(void) {
     ui64 a = 0xFFFFFFFFFFFFFFFF, b = 0xFFFFFFFFFFFFFFFF;
     UnsignedInt128 r = ui64product(a,b);
     std::cout << r << '\n';
     return 0;
-}
+}*/
 
