@@ -29,9 +29,7 @@
 int main (int argc, char* argv[])
 {
     if(argc > 1) {
-        std::cout << "File input not supported.\n";
-        for(int i = 1; i < argc; i ++)
-            std::cout << argv[i] << "won't be read\n";
+        std::cout << '\n' << argv[0] << " does not support command line arguments.\n";
         return 1;
     }
 
@@ -39,13 +37,12 @@ int main (int argc, char* argv[])
     unsigned i = 0, sz = 0;
     Data d;
 
-    std::cout << "\nWrite the string you want to hash. To process the "
-                 "string sent the value 'EOF', which you can do by:\n\n"
-                 "- Pressing twice the keys CTRL-Z for Windows.\n"
-                 "- Pressing twice the keys CTRL-D for Unix and Linux.\n\n";
+    std::cout << "\nWrite the string you want to hash. To process the string sent the value 'EOF', which you can do by:\n\n"
+                 "- Pressing twice the keys CTRL+Z for Windows.\n"
+                 "- Pressing twice the keys CTRL+D for Unix and Linux.\n\n";
 
     while((buffer[i++] = getchar()) != EOF)
-        if(i == BLOCK_SIZE) { // Buffer exhausted.
+        if(i == BLOCK_SIZE) {                                                   // Buffer exhausted.
             d.append(buffer, BLOCK_SIZE);
             sz += BLOCK_SIZE;
             i = 0;

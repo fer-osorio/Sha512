@@ -19,14 +19,12 @@ class Sha512 {
 	Sha512& operator = (const Sha512& sha);
 
 	private:
-	char Hash[64]; // Stores the hash value.
+	char Hash[64]; 																// Stores the hash value.
 
     // -Functions.-------------------------------------------------------------
 
-    // -Rotation to the right.
-    ui64 RotR(ui64 x, int n);
-    // -Rotation to the left.
-    ui64 RotL(ui64 x, int n);
+    ui64 RotR(ui64 x, int n);													// -Rotation to the right.
+    ui64 RotL(ui64 x, int n);													// -Rotation to the left.
 
 	// -Functions implemented directly in the SHA512 algorithm.
     ui64 Ch(ui64 x, ui64 y, ui64 z);
@@ -37,16 +35,13 @@ class Sha512 {
     ui64 sigma0(ui64 x);
     ui64 sigma1(ui64 x);
 
-	// -Takes an array of 8 bytes and builds an integer of 64 bits (8 bytes).
-	// -Input: {a0, a1,..., a7}. Output a0•a1•...•a7 where • is concatenation.
-	ui64 _8bytes_to_int64(const char bytes[8]);
+	ui64 _8bytes_to_int64(const char bytes[8]);									// -Takes an array of 8 bytes and builds an integer of 64 bits (8 bytes).
+																				// -Input: {a0, a1,..., a7}. Output a0•a1•...•a7 where • is concatenation.
 
-	// -Takes an integer of 64 bits (8 bytes) and builds an array of 8 bytes.
-	// -Input: a0•a1•...•a7 where • is concatenation. Output {a0, a1,..., a7}.
-	void int64_to_8bytes(const ui64 n, char result[8]);
+	void int64_to_8bytes(const ui64 n, char result[8]);							// -Takes an integer of 64 bits (8 bytes) and builds an array of 8 bytes.
+																				// -Input: a0•a1•...•a7 where • is concatenation. Output {a0, a1,..., a7}.
 
-	// -Processes a 1024- bits block.
-	void processBlock(const char M[128], ui64 W[80], ui64 H[8]);
+	void processBlock(const char M[128], ui64 W[80], ui64 H[8]);				// -Processes a 1024- bits block.
 
 	friend std::ostream& operator << (std::ostream& s, Sha512 sha);
 
