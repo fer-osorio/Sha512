@@ -1,6 +1,5 @@
 all: Sha512
 
-
 WARNINGS = -Wall -Weffc++ -Wextra -Wsign-conversion -pedantic-errors
 DEBUG = -ggdb -fno-omit-frame-pointer
 OPTIMIZE = -O2
@@ -24,4 +23,3 @@ install:
 # Builder uses this target to run your application.
 run:
 	./Sha512
-
