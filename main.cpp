@@ -24,7 +24,7 @@
  */
 
 #include "Sha512.hpp"
-#include "Data.hpp"
+#define BLOCK_SIZE 1024
 
 int main (int argc, char* argv[])
 {
@@ -34,22 +34,16 @@ int main (int argc, char* argv[])
     }
 
     char buffer[BLOCK_SIZE];
-    unsigned i = 0, sz = 0;
-    Data d;
+    unsigned sz = 0;
 
     std::cout << "\nWrite the string you want to hash. To process the string sent the value 'EOF', which you can do by:\n\n"
                  "- Pressing twice the keys CTRL+Z for Windows.\n"
                  "- Pressing twice the keys CTRL+D for Unix and Linux.\n\n";
 
-    while((buffer[i++] = getchar()) != EOF)
-        if(i == BLOCK_SIZE) {                                                   // Buffer exhausted.
-            d.append(buffer, BLOCK_SIZE);
-            sz += BLOCK_SIZE;
-            i = 0;
-        }
-    buffer[--i] = 0;
-    d.append(buffer, i);
-    Sha512 sha(d.getContent()->bytes, d.getSize());
+    while((buffer[sz++] = getchar()) != EOF)
+        if(sz == BLOCK_SIZE) std::cout << "\nBuffer exhausted...\n";
+    buffer[--sz] = 0;
+    Sha512 sha(buffer, sz);
     std::cout << "\nHash :: "; sha.println();
 
     return 0;
