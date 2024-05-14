@@ -161,11 +161,11 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
 
     UnsignedInt128 N(size[0], size[1]);                                         // -Getting the size in blocks of 1024.
     N >>= 10;                                                                   // -N = N/1024 (integer division)
-    N++;                                                                        // -We need enough space to add the '1' extra bit, the k zeros and the binary
+    ++N;                                                                        // -We need enough space to add the '1' extra bit, the k zeros and the binary
                                                                                 //  representation of the data size (in bits). In any case well add one more 1024
                                                                                 //  block.
     if(k < 0) {
-        N++;                                                                    // -One block isn't enough, adding another one.
+        ++N;                                                                    // -One block isn't enough, adding another one.
         blocksAdded = 2;
         k += 1024;                                                              // -Making k positive while preserving the established congruence
     }
@@ -185,7 +185,7 @@ void Sha512::calculateHash(const char data[], const ui64 size[2]) {
         }
         processBlock(dptr, W, H);
         dptr += 128;
-        N--;
+        --N;
     }
     r >>= 3;                                                                    // -Amount of bytes hasn't been processed. Since r = size % 1024, then
     for(i = 0; i < r; i++) auxBlock[i] = dptr[i];                               //  0 <= r < 1024 therefore  0 <= r/8 < 128. Notice that r>>3 is equivalent to r/8
