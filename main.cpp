@@ -111,6 +111,7 @@ int main (int argc, char* argv[]) {
     if(argc > 1) {
         const TXT txtFile = argv[1];                                            // Calling TXT(const char*) constructor
         Sha512 s(txtFile.content, txtFile.size);
+        s.println();
         s.save();
         return 1;
     }
@@ -126,7 +127,8 @@ int main (int argc, char* argv[]) {
         if(sz == BLOCK_SIZE) std::cout << "\nBuffer exhausted...\n";
     buffer[--sz] = 0;
     Sha512 sha(buffer, sz);
-    std::cout << "\nHash :: "; sha.println();
+    std::cout << "\nHash :: ";
+    sha.println();
 
     return 0;
 }
