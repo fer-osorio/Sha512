@@ -1,5 +1,6 @@
 // -Definitions for the Sha512 Functions.
 
+#include<fstream>
 #include"Sha512.hpp"
 #include"DataPrintFunctions.hpp"
 
@@ -247,6 +248,22 @@ char Sha512::operator [] (int i) const {
 Sha512& Sha512::operator=(const Sha512 &sha) {
     if(this != &sha) for(int i = 0; i < 64; i++) this->Hash[i] = sha.Hash[i];
     return *this;
+}
+
+void Sha512::save(const char* fname) {                                // -Saving the content in a .txt file
+    std::ofstream file;
+    char _fname[30] = {'h', 'a', 's', 'h', '.', 't', 'x', 't'};
+    if(fname == NULL) {                                                     // -If a file name is not provided, then we assign the name of the object
+        file.open(_fname);
+    } else {
+        file.open(fname);
+    }
+    if(file.is_open()) {
+        file.write(this->Hash, 64);
+        file.close();
+    } else {
+        throw "File could not be written.";
+    }
 }
 
 std::ostream& operator << (std::ostream& s, Sha512 sha) {

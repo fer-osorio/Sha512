@@ -18,6 +18,8 @@ class Sha512 {
 	char operator [] (int) const;
 	Sha512& operator = (const Sha512& sha);
 
+	void save(const char* fname = NULL);										// Saving in a .txt file
+
 	private:
 	char Hash[64]; 																// Stores the hash value.
 
