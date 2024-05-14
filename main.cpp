@@ -26,7 +26,7 @@
 #include "Sha512.hpp"
 #include<fstream>
 
-#define BLOCK_SIZE 1024
+#define BLOCK_SIZE 8192
 #define NAME_MAX_LEN 30
 
 void copyStr(const char source[], char dest[]) {                                // Supposing source is a formatted string and dest has enough space
