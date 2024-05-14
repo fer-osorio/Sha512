@@ -22,8 +22,8 @@ struct UnsignedInt128 {
 
 	UnsignedInt128& operator = (const UnsignedInt128&);
 
-	UnsignedInt128 operator ++ (int);
-	UnsignedInt128 operator -- (int);
+	UnsignedInt128& operator ++ ();
+	UnsignedInt128& operator -- ();
 
 	UnsignedInt128& operator >>= (int n);										// -Bitwise shift to the right
 	UnsignedInt128& operator <<= (int n);										// -Bitwise shift to the left

@@ -18,32 +18,31 @@ UnsignedInt128& UnsignedInt128::operator = (const UnsignedInt128& b) {
     return *this;
 }
 
-UnsignedInt128 UnsignedInt128::operator ++ (int) {                              // -digits[0]^64 + digits[1]
-    UnsignedInt128 r = *this;
-    if(r.digits[1] == ui64MAX) {
-        if(r.digits[0] == ui64MAX) return 0;                                    // -Maximum value for 128 bits integer plus 1. Returning 0
-        else {
-            r.digits[1] = 0;                                                    // -Carriage generated
-            r.digits[0]++;                                                      // -Adding carriage
+UnsignedInt128& UnsignedInt128::operator ++ () {                                // -digits[0]^64 + digits[1]
+    if(this->digits[1] == ui64MAX) {
+        if(this->digits[0] == ui64MAX) {                                        // -Maximum value for 128 bits integer plus 1. Returning 0
+            this->digits[1] = this->digits[0] = 0;
         }
-    } else r.digits[1]++;
-    return r;
+        else {
+            this->digits[1] = 0;                                                // -Carriage generated
+            this->digits[0]++;                                                  // -Adding carriage
+        }
+    } else this->digits[1]++;
+    return *this;
 }
 
-UnsignedInt128 UnsignedInt128::operator -- (int) {                              // -digits[0]^64 + digits[1]
-    UnsignedInt128 r = *this;
-    if(r.digits[1] == 0) {
-        if(r.digits[0] == 0) {                                                  // Zero minus one, returning maximum value for a 128 bit integer
-            r.digits[0] = ui64MAX;
-            r.digits[1] = ui64MAX;
-            return r;
+UnsignedInt128& UnsignedInt128::operator -- () {                                // -digits[0]^64 + digits[1]
+    if(this->digits[1] == 0) {
+        if(this->digits[0] == 0) {                                              // Zero minus one, returning maximum value for a 128 bit integer
+            this->digits[0] = ui64MAX;
+            this->digits[1] = ui64MAX;
         }
         else {
-            r.digits[0]--;                                                      // -Taking a loan
-            r.digits[1] = ui64MAX;                                              // -Applying loan
+            this->digits[0]--;                                                      // -Taking a loan
+            this->digits[1] = ui64MAX;                                              // -Applying loan
         }
-    } else r.digits[1]--;
-    return r;
+    } else this->digits[1]--;
+    return *this;
 }
 
 UnsignedInt128& UnsignedInt128::operator >>= (int n) {
